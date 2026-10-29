@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SUFGaze: a feasibility study of gaze estimation from mixed ultrasonic responses using a commercial bone-conduction headphone and one glasses-mounted microphone.">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <title>SUFGaze | Project materials</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="masthead"><a href="#" class="brand">SUFGaze</a><nav aria-label="Page navigation"><a href="#demo">Demonstration</a><a href="#system">System</a><a href="#timing">Streaming evaluation</a></nav></header>
+  <main>
+    <section class="hero">
+      <div><p class="intro">Camera-free gaze sensing</p><h1>Listening for<br>gaze.</h1><p class="lead">A commercial bone-conduction headphone, one glasses-mounted microphone, and a model that learns from mixed ultrasonic responses.</p><p class="scope">A feasibility study of gaze estimation during seated screen interaction.</p><a class="button" href="#demo">Explore the demonstration</a></div>
+      <div class="diagram" role="img" aria-label="Conceptual signal flow: two headphone transducers emit chirps; a bridge microphone records mixed responses; CorrFormer estimates yaw and pitch.">
+        <svg viewBox="0 0 500 390" aria-hidden="true">
+          <defs><pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M 24 0 L 0 0 0 24" fill="none" stroke="#b9d5df" stroke-width=".6"/></pattern></defs>
+          <rect width="500" height="390" rx="24" fill="url(#grid)"/>
+          <path d="M120 184 C120 49 380 49 380 184" fill="none" stroke="#234f64" stroke-width="13"/>
+          <path d="M153 182 Q250 143 347 182 M153 182 L144 215 Q185 244 219 208 L224 180 M347 182 L356 215 Q315 244 281 208 L276 180 M224 190 Q250 176 276 190" fill="none" stroke="#234f64" stroke-width="5" stroke-linejoin="round"/>
+          <rect x="108" y="167" width="25" height="46" rx="10" fill="#dd674b"/><rect x="367" y="167" width="25" height="46" rx="10" fill="#dd674b"/>
+          <circle cx="250" cy="183" r="9" fill="#007c83"/>
+          <path class="signal" d="M132 190 Q183 118 241 181 M368 190 Q317 118 259 181" fill="none" stroke="#dd674b" stroke-width="2.5" stroke-dasharray="5 7"/>
+          <path d="M250 195 L250 265" stroke="#007c83" stroke-width="2"/>
+          <rect x="149" y="266" width="202" height="47" rx="8" fill="#234f64"/>
+          <text x="250" y="295" text-anchor="middle" fill="white" font-size="18">CorrFormer</text>
+          <text x="250" y="347" text-anchor="middle" fill="#234f64" font-size="16">Yaw + pitch estimation</text>
+        </svg>
+        <p>Conceptual system illustration, not a propagation measurement or a live prediction.</p>
+      </div>
+    </section>
+    <section id="demo" class="demo section">
+      <div class="section-title"><h2>See the complete pipeline.</h2><p>Hardware, live audio acquisition, processing, and returned gaze predictions in one continuous recording.</p></div>
+      <div class="video-stage" id="video-stage">
+        <div class="pending" id="video-pending"><span class="play-mark" aria-hidden="true">&#9654;</span><h3>Demonstration video in preparation</h3><p>A recorded end-to-end demonstration has not yet been added. The illustration above is not a substitute for a live-system recording.</p></div>
+        <video id="demo-video" controls playsinline preload="metadata" hidden aria-label="Recorded SUFGaze end-to-end demonstration"><track kind="captions" src="assets/demo.en.vtt" srclang="en" label="English"></video>
+      </div>
+      <p class="note" id="demo-note">The streaming measurements below come from a separate verified live-microphone run. They do not certify the latency of an unrecorded video.</p>
+    </section>
+    <section id="system" class="section system">
+      <h2>From sound to gaze.</h2>
+      <ol class="pipeline">
+        <li><h3>Transmit</h3><p>Two transducers in a commercial bone-conduction headphone emit 17–21 kHz chirps.</p></li>
+        <li><h3>Receive</h3><p>A single microphone near the glasses bridge records a mixed response containing acoustic and coupling-dependent contributions.</p></li>
+        <li><h3>Estimate</h3><p>CorrFormer receives cross-correlation representations from eight consecutive sensing frames and estimates yaw and pitch.</p></li>
+      </ol>
+      <p class="scope-strip">Tobii provides supervision during data collection; it is not an input to runtime prediction. The measurements do not isolate a pure surface-wave mechanism.</p>
+    </section>
+    <section id="timing" class="section timing">
+      <div><h2>Measured as a<br>streaming system.</h2><p>Live microphone input, one NVIDIA RTX 4090 GPU, batch size 1, FP16, and CUDA Graph replay.</p><p>48 kHz audio in 480-sample blocks. Eight-frame correlation input.</p></div>
+      <div><dl class="results"><div><dt>Median end-to-end latency</dt><dd>37.47 <span>ms</span></dd></div><div><dt>95th / 99th percentile</dt><dd class="compact">69.61 / 103.69 <span>ms</span></dd></div><div><dt>Received prediction throughput</dt><dd>38.01 <span>results/s</span></dd></div></dl><p class="note">22,807 complete predictions over 599.958 s. Timing starts at the client callback containing the last required audio sample and ends at complete-result receipt and decoding. It includes transmission, preprocessing, inference, and return; it excludes pre-callback ADC/driver and display delay. Approximately 210 ms of input history is reported separately from per-result latency.</p></div>
+    </section>
+  </main>
+  <footer><p>SUFGaze project materials</p><p>No author identities, analytics, external fonts, or third-party media embeds.</p></footer>
+  <script src="site.js"></script>
+</body>
+</html>
